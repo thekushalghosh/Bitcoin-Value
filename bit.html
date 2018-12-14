@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>bitcoin</title>
+    <style type="text/css">
+    #container {
+      min-width: 310px;
+      max-width: 800px;
+      height: 400px;
+      margin: 0 auto
+}
+    </style>
+    <!-- <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script> -->
+  </head>
+  <body>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <!-- <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script> -->
+
+<!-- <div id="container" style="height: 400px; min-width: 310px"></div> -->
+    <div id="container"></div>
+    <script type="text/javascript">
+    perform();
+    var d = new Date();
+    var graph = Highcharts.chart('container', {
+
+        title: {
+            text: 'Bitcoi value in different currencies'
+        },
+
+        subtitle: {
+            text: 'Source: thesolarfoundation.com'
+        },
+
+        yAxis: {
+            title: {
+                text: 'Bitcoin Value'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
+                },
+                pointStart: d.getTime(),
+                pointInterval : 5000
+            }
+        },
+
+        series: [{
+            name: 'USD',
+            data: []
+        }, {
+            name: 'GBP',
+            data: []
+        }, {
+            name: 'EUR',
+            data: []
+        }],
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
+                },
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
+                    }
+                }
+            }]
+        }
+
+      });
+    setInterval(perform,5000);
+    function perform(){
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function(){
+        if(this.readyState==4&&this.status==200){
+          var obj = JSON.parse(this.responseText);
+          var usd = obj.bpi.USD.rate_float ;
+          var gbp = obj.bpi.GBP.rate_float ;
+          var eur = obj.bpi.EUR.rate_float ;
+          console.log(usd);
+          console.log(gbp);
+          console.log(eur);
+          graph.series[0].addPoint(usd);
+          graph.series[1].addPoint(gbp);
+          graph.series[2].addPoint(eur);
+          // var d = new Date(); // for now
+          // var hrs = d.getHours(); // => 9
+          // var mins = d.getMinutes(); // =>  30
+          // var secs = d.getSeconds(); // => 51
+          // var time = hrs + '/' + mins + '/' + secs ;
+          // Highcharts.chart.xAxis.categories.push(time);
+          // Highcharts.chart.series[0].data.push(usd);
+          // Highcharts.chart.series[1].data.push(gbp);
+          // Highcharts.chart.series[2].data.push(eur);
+        }
+      };
+      xhttp.open(
+        "GET",
+        "https://api.coindesk.com/v1/bpi/currentprice.json",
+        true
+      );
+      xhttp.send();
+    }
+    // setInterval(perform,5000);
+    // setTimeout(xhttp.send(),1000);
+    // var now = new Date();
+    // var year = now.getFullYear();
+    // var month = now.getMonth();
+    // var date = now.getDate();
+    // var options = {
+    //
+    //     title: {
+    //         text: 'Graph between the value of Bitcoin and corresponding currencies'
+    //     },
+    //
+    //     subtitle: {
+    //         text: 'Source: coindesk.com'
+    //     },
+    //
+    //     yAxis: {
+    //         title: {
+    //             text: 'Value of Bitcoin'
+    //         }
+    //     },
+    //     legend: {
+    //         layout: 'vertical',
+    //         align: 'right',
+    //         verticalAlign: 'middle'
+    //     },
+    //
+    //     plotOptions: {
+    //         series: {
+    //             label: {
+    //                 connectorAllowed: false
+    //             },
+    //             pointStart: Date.getTime()
+    //         }
+    //     },
+    //
+    //     series: [{
+    //         name: 'USD',
+    //         data: []
+    //         // pointStart : Date.UTC(year,month,date),
+    //         // pointInterval : 1000
+    //     }, {
+    //         name: 'GBP',
+    //         data: []
+    //         // pointStart : Date.UTC(year,month,date),
+    //         // pointInterval : 1000
+    //     }, {
+    //         name: 'EUR',
+    //         data: []
+    //         // pointStart : Date.UTC(year,month,date),
+    //         // pointInterval : 1000
+    //     }],
+    //
+    //     responsive: {
+    //         rules: [{
+    //             condition: {
+    //                 maxWidth: 500
+    //             },
+    //             chartOptions: {
+    //                 legend: {
+    //                     layout: 'horizontal',
+    //                     align: 'center',
+    //                     verticalAlign: 'bottom'
+    //                 }
+    //             }
+    //         }]
+    //     }
+    //
+    // };
+
+// Highcharts.chart('container', options);
+// var options = {
+//     chart: {
+//         events: {
+//             load: function () {
+//
+//                 // set up the updating of the chart each second
+//                 var series = this.series[0];
+//                 setInterval(perform, 1000);
+//             }
+//         }
+//     },
+//
+//     time: {
+//         useUTC: false
+//     },
+//
+//     rangeSelector: {
+//         buttons: [{
+//             count: 1,
+//             type: 'minute',
+//             text: '1M'
+//         }, {
+//             count: 5,
+//             type: 'minute',
+//             text: '5M'
+//         }, {
+//             type: 'all',
+//             text: 'All'
+//         }],
+//         inputEnabled: false,
+//         selected: 0
+//     },
+//
+//     title: {
+//         text: 'Live random data'
+//     },
+//
+//     exporting: {
+//         enabled: false
+//     },
+//
+//     series: [{
+//         name: 'Random data',
+//         data: (function () {
+//             // generate an array of random data
+//             var data = [],
+//                 time = (new Date()).getTime(),
+//                 i;
+//
+//             for (i = -999; i <= 0; i += 1) {
+//                 data.push([
+//                     time + i * 1000,
+//                     Math.round(Math.random() * 100)
+//                 ]);
+//             }
+//             return data;
+//         }())
+//     }]
+// };
+// function give1(){
+//   var xhttp = new XMLHttpRequest();
+//   xhttp.onreadystatechange = function(){
+//     if(this.readyState==4&&this.status==200){
+//       var obj = JSON.parse(this.responseText);
+//       var usd = obj.bpi.USD.rate_float ;
+//       var gbp = obj.bpi.GBP.rate_float ;
+//       var eur = obj.bpi.EUR.rate_float ;
+//       console.log(usd);
+//       console.log(gbp);
+//       console.log(eur);
+//       var x = (new Date()).getTime();
+//       var y1 = usd;
+//       var y2 = gbp;
+//       var y3 = eur;
+//       return y1;
+//     }
+//   };
+//   xhttp.open(
+//     "GET",
+//     "https://api.coindesk.com/v1/bpi/currentprice.json",
+//     true
+//   );
+//   xhttp.send();
+// }
+// function give2(){
+//   var xhttp = new XMLHttpRequest();
+//   xhttp.onreadystatechange = function(){
+//     if(this.readyState==4&&this.status==200){
+//       var obj = JSON.parse(this.responseText);
+//       var usd = obj.bpi.USD.rate_float ;
+//       var gbp = obj.bpi.GBP.rate_float ;
+//       var eur = obj.bpi.EUR.rate_float ;
+//       console.log(usd);
+//       console.log(gbp);
+//       console.log(eur);
+//       var x = (new Date()).getTime();
+//       var y1 = usd;
+//       var y2 = gbp;
+//       var y3 = eur;
+//       return y2;
+//     }
+//   };
+//   xhttp.open(
+//     "GET",
+//     "https://api.coindesk.com/v1/bpi/currentprice.json",
+//     true
+//   );
+//   xhttp.send();
+// }
+// function give3(){
+//   var xhttp = new XMLHttpRequest();
+//   xhttp.onreadystatechange = function(){
+//     if(this.readyState==4&&this.status==200){
+//       var obj = JSON.parse(this.responseText);
+//       var usd = obj.bpi.USD.rate_float ;
+//       var gbp = obj.bpi.GBP.rate_float ;
+//       var eur = obj.bpi.EUR.rate_float ;
+//       console.log(usd);
+//       console.log(gbp);
+//       console.log(eur);
+//       var x = (new Date()).getTime();
+//       var y1 = usd;
+//       var y2 = gbp;
+//       var y3 = eur;
+//       return y3;
+//     }
+//   };
+//   xhttp.open(
+//     "GET",
+//     "https://api.coindesk.com/v1/bpi/currentprice.json",
+//     true
+//   );
+//   xhttp.send();
+// }
+// function perform(){
+//   var xhttp = new XMLHttpRequest();
+//   xhttp.onreadystatechange = function(){
+//     if(this.readyState==4&&this.status==200){
+//       var obj = JSON.parse(this.responseText);
+//       var usd = obj.bpi.USD.rate_float ;
+//       var gbp = obj.bpi.GBP.rate_float ;
+//       var eur = obj.bpi.EUR.rate_float ;
+//       console.log(usd);
+//       console.log(gbp);
+//       console.log(eur);
+//       var x = (new Date()).getTime();
+//       var y1 = usd;
+//       var y2 = gbp;
+//       var y3 = eur;
+//       options.series[0].addPoint([x,y1],true,true);
+//       options.series[0].addPoint([x,y2],true,true);
+//       options.series[0].addPoint([x,y3],true,true);
+//       // var d = new Date(); // for now
+//       // var hrs = d.getHours(); // => 9
+//       // var mins = d.getMinutes(); // =>  30
+//       // var secs = d.getSeconds(); // => 51
+//       // var time = hrs + '/' + mins + '/' + secs ;
+      // console.log(options);
+      // console.log(options.series);
+//       // options.xAxis.categories.push(time);
+//       options.series[0].data.push(usd);
+//       options.series[1].data.push(gbp);
+//       options.series[2].data.push(eur);
+//       Highcharts.chart('container', options);
+//     }
+//   };
+//   xhttp.open(
+//     "GET",
+//     "https://api.coindesk.com/v1/bpi/currentprice.json",
+//     true
+//   );
+//   xhttp.send();
+// }
+// setInterval(perform,1000);
+// var xhttp = new XMLHttpRequest();
+// xhttp.onreadystatechange = function(){
+//   if(this.readyState==4&&this.status==200){
+//     var obj = JSON.parse(this.responseText);
+//     var usd = obj.bpi.USD.rate ;
+//     var gbp = obj.bpi.GBP.rate ;
+//     var eur = obj.bpi.EUR.rate ;
+//     console.log(usd);
+//     console.log(gbp);
+//     console.log(eur);
+//     var d = new Date(); // for now
+//     var hrs = d.getHours(); // => 9
+//     var mins = d.getMinutes(); // =>  30
+//     var secs = d.getSeconds(); // => 51
+//     var time = hrs + '/' + mins + '/' + secs ;
+    // console.log(options);
+    // console.log(options.series);
+//     options.xAxis.categories.push(time);
+//     options.series[0].data.push(usd);
+//     options.series[1].data.push(gbp);
+//     options.series[2].data.push(eur);
+//   }
+// };
+// xhttp.open(
+//   "GET",
+//   "https://api.coindesk.com/v1/bpi/currentprice.json",
+//   true
+// );
+// setTimeout(xhttp.send(),1000);
+// Highcharts.stockChart('container', options);
+
+
+    </script>
+  </body>
+</html>
